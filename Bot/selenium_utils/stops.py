@@ -17,14 +17,12 @@ class SeleniumHandler:
     def open_stop(self):
         print('@@ OPEN STOPS @@')
         self.driver.get("https://stopots.com/pt/")
-        time.sleep(10)
     
     def login_window(self):
         print('@@ CLICK LOGIN BUTTON @@')
         try:
             button = self.driver.find_element(By.XPATH, '//*[@id="top"]/div[1]/div[2]/div[1]/form/button')
             button.click()
-            time.sleep(5)
         except Exception as e:
             print("ERROR: ", e)
         

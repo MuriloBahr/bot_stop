@@ -1,3 +1,22 @@
-env/
 .env
 Makefile
+
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore common editor temp files
+*.swp
+*.swo
+
+# Ignore generic temp files
+*.tmp
+*.temp
+
+# Ignore log files
+*.log
+
+# Ignore virtual environment folders
+env/
+venv/
