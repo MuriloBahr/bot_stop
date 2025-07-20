@@ -1,0 +1,17 @@
+{
+    "config_stop": {
+        "THEMES": [
+            "FRUTA",
+            "MARCA",
+            "NOME",
+            "CEP",
+            "OBJETO",
+            "FILME",
+            "CELEBRIDADE",
+            "PALAVRAS EM INGLES",
+            "PROFISSAO",
+            "COR",
+            "COMIDA"
+        ]
+    }
+}
