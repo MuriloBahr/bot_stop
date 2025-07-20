@@ -8,10 +8,15 @@
             "OBJETO",
             "FILME",
             "CELEBRIDADE",
-            "PALAVRAS EM INGLES",
+            "PALAVRA EM INGLES",
             "PROFISSAO",
             "COR",
-            "COMIDA"
-        ]
+            "COMIDA",
+            "VERBO",
+            "FLOR",
+            "ANIMAL"
+        ],
+        "password": "bts",
+        "nickname": "TOGURO"
     }
 }
