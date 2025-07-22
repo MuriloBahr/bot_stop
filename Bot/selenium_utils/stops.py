@@ -17,6 +17,8 @@ class SeleniumHandler(UtilsSelenium):
             self.driver = webdriver.Firefox(service=service, options=options)
         else:
             self.driver = webdriver.Firefox(options=options)
+        
+        self.wait = WebDriverWait(self.driver, 30)
 
     def open_stop(self):
         print('@@ OPEN STOPS @@')
@@ -53,7 +55,7 @@ class SeleniumHandler(UtilsSelenium):
 
             for btn in delete_buttons:
                 try:
-                    wait.until(EC.element_to_be_clickable(btn)).click()
+                    self.wait.until(EC.element_to_be_clickable(btn)).click()
                 except Exception as e:
                     print(f"ERROR while clearing theme: {e}")
     
@@ -100,7 +102,7 @@ class SeleniumHandler(UtilsSelenium):
 
                 if found:
                     print("@@ INICIAR found! Clicking START button @@")
-                    start_button = wait.until(
+                    start_button = self.wait.until(
                         EC.element_to_be_clickable(
                             (By.XPATH, config.XPATH_START_GAME)
                         )
@@ -111,6 +113,61 @@ class SeleniumHandler(UtilsSelenium):
                 print(f"ERROR checking INICIAR: {e}")
             time.sleep(1)
             elapsed += 1
+    
+    def get_letter_stop(self):
+        return self.get_text(config.XPATH_LETTER)
+    
+    def insert_themes_answer(self):
+        content_ia = None
+        div_element = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, config.XPATH_THEMES_IN_GAME))
+        )
+        labels = div_element.find_elements(By.TAG_NAME, 'label')
+        for label in labels:
+            span = label.find_element(By.TAG_NAME, 'span')
+            WebDriverWait(self.driver, 10).until(
+                lambda d: span.text.strip() != ""
+            )
+            label_text = span.text.strip().lower()
+            if label_text:
+                content_ia = self.consulting_AI(label_text, self.get_letter_stop())
+                input_element = label.find_element(By.TAG_NAME, 'input')
+                input_element.clear()
+                input_element.send_keys(content_ia)
+        self.click_stop()
+        self.click_avaliable()
+                
+    def click_stop(self):
+        # Localizador do botão
+        button_xpath = '//button[contains(@class, "bt-yellow") and contains(@class, "icon-exclamation")]'
+
+        # Espera até a classe NÃO conter "disable"
+        button = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, button_xpath))
+        )
+        self.wait.until(
+            lambda d: "disable" not in button.get_attribute("class")
+        )
+        button.click()
+    
+    def click_avaliable(self):
+        # XPath do botão
+        button_xpath = '//*[@id="screenGame"]/div[2]/div[2]/div/button'
+
+        # Loop até não encontrar mais o botão
+        while True:
+            try:
+                # Espera o botão aparecer por até 5 segundos
+                button = self.wait.until(
+                    EC.presence_of_element_located((By.XPATH, button_xpath))
+                )
+                # Clica
+                button.click()
+                print("Botão clicado.")
+            except Exception as error:
+                # Se não achar mais o botão → parou
+                print("Botão não encontrado, saindo do loop.")
+                break
     
     def close(self):
         print('@@ END PROCESS SELENIUM')
@@ -149,6 +206,10 @@ class SeleniumHandler(UtilsSelenium):
         
         # Wait INICIAR from player
         self.wait_for_start_and_click()
-
-        # Exit selenium
-        self.close()
+        
+        # Get letter stop
+        self.get_letter_stop()
+        
+        # Insert Answers from themes
+        self.insert_themes_answer()
+        
