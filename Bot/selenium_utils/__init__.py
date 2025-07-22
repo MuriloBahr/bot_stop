@@ -48,6 +48,21 @@ class UtilsSelenium():
             print(f'ERROR: {e}')
         return value
     
+    def get_text(self, xpath):
+        text = None
+        try:
+            while True:
+                element = WebDriverWait(self.driver, self.wait_time).until(
+                    EC.presence_of_element_located((By.XPATH, xpath))
+                )
+                if element.text != '?':
+                    text = element.text
+                    break
+        except Exception as e:
+            print(f'ERROR: {e}')
+        print(f'@@ GETTING LETTER: {text}')
+        return text
+    
     def content_changed(self, xpath):
         try:
             current_content = self.driver.find_element(By.XPATH, xpath).get_attribute("innerHTML")
@@ -57,3 +72,13 @@ class UtilsSelenium():
             return False
         except Exception:
             return False
+        
+    def consulting_AI(self, theme, letter):
+        from handlers.main_handler import MainHandler
+        print('@@@ CONSULTING GEMINI @@')
+        response = None
+        prompt = f"Você é o melhor jogador de STOP do mundo. Sua tarefa é responder apenas com uma única palavra ou expressão curta que corresponda exatamente ao tema e à letra indicados. Se não existir, responda apenas XXXXXXX — sem explicação, sem pontuação extra, sem frases. Tema (CEP = cidade, estado ou país, Nome = Nome de pessoas): {theme} Letra inicial: {letter}"
+        response = MainHandler().handler_process_gemini(prompt)
+        return response            
+        
+        
