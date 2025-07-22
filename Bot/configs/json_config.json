@@ -17,6 +17,7 @@
             "ANIMAL"
         ],
         "password": "bts",
-        "nickname": "TOGURO"
+        "nickname": "TOGURO",
+        "prompt_ia": ""
     }
 }
