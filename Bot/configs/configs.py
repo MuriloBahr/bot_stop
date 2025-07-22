@@ -12,7 +12,7 @@ class Config:
     
     BASE_DIR = os.path.dirname(__file__)
     
-    DEEP_SEEK_KEY: str = os.getenv("DEEP_SEEK_KEY")
+    GEMINI_KEY: str = os.getenv("GEMINI_API_KEY")
     DEBUG: bool = os.getenv("DEBUG") == "True"
     
     XPATH_LOGIN = '//*[@id="top"]/div[1]/div[2]/div[1]/form/button'
@@ -27,6 +27,8 @@ class Config:
     XPATH_CHAT = '//*[@id="chat"]/form/input'
     XPATH_START_GAME = '//*[@id="screenGame"]/div[2]/div[2]/div/button'
     XPATH_LIST_USERS = '//*[@id="users"]'
+    XPATH_LETTER = '//*[@id="letter"]'
+    XPATH_THEMES_IN_GAME = '//*[@id="screenGame"]/div[2]/div[2]/div/div[1]'
     
     THEMES: list = field(default_factory=list)
     
