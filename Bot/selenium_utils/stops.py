@@ -85,9 +85,7 @@ class SeleniumHandler(UtilsSelenium):
             self.insert_input('XD XD XD XD', config.XPATH_CHAT, enter=True)
         
     def wait_for_start_and_click(self):
-        wait = WebDriverWait(self.driver, 30)
         print("@@ Waiting for INICIAR message @@")
-        elapsed = 0
         while True:
             try:
                 self.talk_start()
@@ -112,7 +110,6 @@ class SeleniumHandler(UtilsSelenium):
             except Exception as e:
                 print(f"ERROR checking INICIAR: {e}")
             time.sleep(1)
-            elapsed += 1
     
     def get_letter_stop(self):
         return self.get_text(config.XPATH_LETTER)
@@ -138,36 +135,40 @@ class SeleniumHandler(UtilsSelenium):
         self.click_avaliable()
                 
     def click_stop(self):
-        # Localizador do botão
-        button_xpath = '//button[contains(@class, "bt-yellow") and contains(@class, "icon-exclamation")]'
+        try:
+            button_xpath = '//button[contains(@class, "bt-yellow") and contains(@class, "icon-exclamation")]'
 
-        # Espera até a classe NÃO conter "disable"
-        button = self.wait.until(
-            EC.presence_of_element_located((By.XPATH, button_xpath))
-        )
-        self.wait.until(
-            lambda d: "disable" not in button.get_attribute("class")
-        )
-        button.click()
+            button = self.wait.until(
+                EC.presence_of_element_located((By.XPATH, button_xpath))
+            )
+            self.wait.until(
+                lambda d: "disable" not in button.get_attribute("class")
+            )
+            button.click()
+        except Exception as error:
+            ...
     
     def click_avaliable(self):
-        # XPath do botão
         button_xpath = '//*[@id="screenGame"]/div[2]/div[2]/div/button'
 
-        # Loop até não encontrar mais o botão
         while True:
             try:
-                # Espera o botão aparecer por até 5 segundos
                 button = self.wait.until(
                     EC.presence_of_element_located((By.XPATH, button_xpath))
                 )
-                # Clica
+
+                button_text = button.text.strip().upper()
+                print(f"Texto do botão: {button_text}")
+
+                if button_text == "ESTOU PRONTO":
+                    print("Botão com texto ESTOU PRONTO encontrado, saindo do loop.")
+                    break
                 button.click()
                 print("Botão clicado.")
+
             except Exception as error:
-                # Se não achar mais o botão → parou
-                print("Botão não encontrado, saindo do loop.")
-                break
+                print("Botão não encontrado, tentando de novo...")
+            time.sleep(1)
     
     def close(self):
         print('@@ END PROCESS SELENIUM')
@@ -203,13 +204,13 @@ class SeleniumHandler(UtilsSelenium):
         
         # Close link room
         self.close_link_room()
-        
-        # Wait INICIAR from player
-        self.wait_for_start_and_click()
-        
-        # Get letter stop
-        self.get_letter_stop()
-        
-        # Insert Answers from themes
-        self.insert_themes_answer()
+        for _ in range(10):
+            # Wait INICIAR from player
+            self.wait_for_start_and_click()
+            
+            # Get letter stop
+            self.get_letter_stop()
+            
+            # Insert Answers from themes
+            self.insert_themes_answer()
         

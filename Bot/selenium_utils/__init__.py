@@ -55,7 +55,7 @@ class UtilsSelenium():
                 element = WebDriverWait(self.driver, self.wait_time).until(
                     EC.presence_of_element_located((By.XPATH, xpath))
                 )
-                if element.text != '?':
+                if element.text.isalpha() and len(element.text) == 1:
                     text = element.text
                     break
         except Exception as e:
